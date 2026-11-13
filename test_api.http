@@ -1,0 +1,121 @@
+### 1. Test API Đăng ký tài khoản
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "full_name": "Trương Quốc Anh",
+  "email": "quocanh.test@ued.udn.vn",
+  "password": "123"
+}
+
+###
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "full_name": "Admin UED",
+  "email": "admin@ued.udn.vn",
+  "password": "admin123"
+}
+
+### 
+
+### 2. Test API Đăng nhập tài khoản Admin
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "quocanh.test@ued.udn.vn",
+  "password": "123"
+}
+
+###
+
+### =========================================================
+### 2B. API ĐĂNG NHẬP - TÀI KHOẢN QUẢN TRỊ VIÊN (ADMIN)
+### Dùng để lấy Token cho tính năng "Duyệt tài liệu"
+### =========================================================
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@ued.udn.vn",
+  "password": "admin123"
+}
+
+### =========================================================
+### 3. Lấy danh sách tất cả tài liệu đã duyệt (APPROVED)
+### =========================================================
+GET http://localhost:5000/api/documents
+
+###
+
+### =========================================================
+### 4. Lọc tài liệu theo Môn học (ví dụ: subject_id = 4 - Cơ sở dữ liệu)
+### =========================================================
+GET http://localhost:5000/api/documents?subject_id=4
+
+###
+
+### =========================================================
+### 5. Xem chi tiết 1 tài liệu (ví dụ: id = 1)
+### =========================================================
+GET http://localhost:5000/api/documents/1
+
+###
+
+### =========================================================
+### 6. Đăng tài liệu mới (Yêu cầu gửi kèm Token JWT ở Authorization)
+### Bạn copy mã token lấy từ API Login dán vào đằng sau chữ Bearer
+### =========================================================
+POST http://localhost:5000/api/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJyb2xlIjoiU1RVREVOVCIsImlhdCI6MTc5NDE4Njc0MywiZXhwIjoxNzk0MjczMTQzfQ.UJahT9TBGzENq_fut9IF6yzcJQM1XtgaWnstW1HfyGA
+
+{
+  "title": "Đề thi thử môn Lập trình Web Node.js 2026",
+  "description": "Đề thi kèm lời giải chi tiết cho sinh viên UED",
+  "file_url": "https://s3.amazonaws.com/ued-docs/de_thi_web.pdf",
+  "file_size": "1.5 MB",
+  "file_type": "pdf",
+  "subject_id": 6,
+  "category_id": 3
+}
+
+### =========================================================
+### 7. Xem danh sách tài liệu đang chờ duyệt PENDING (Cần Token ADMIN / MODERATOR)
+### =========================================================
+GET http://localhost:5000/api/documents/pending/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTQyOTg1NzIsImV4cCI6MTc5NDM4NDk3Mn0.aPAGmAlW0HgOXLYvUp1FtavFWtTweRlunk52dynsJ00
+###
+
+### =========================================================
+### 8. Duyệt tài liệu sang APPROVED (Cần Token ADMIN / MODERATOR)
+### =========================================================
+PATCH http://localhost:5000/api/documents/5/status
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTQyOTg1NzIsImV4cCI6MTc5NDM4NDk3Mn0.aPAGmAlW0HgOXLYvUp1FtavFWtTweRlunk52dynsJ00
+
+{
+  "status": "APPROVED"
+}
+
+### =========================================================
+### 9. Lấy danh sách bình luận & điểm số của Tài liệu ID = 1
+### =========================================================
+GET http://localhost:5000/api/reviews/document/1
+
+###
+
+### =========================================================
+### 10. Gửi đánh giá mới cho Tài liệu ID = 1 (Cần Token Sinh viên)
+### =========================================================
+POST http://localhost:5000/api/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo1LCJyb2xlIjoiU1RVREVOVCIsImlhdCI6MTc5NDMwMDI3OSwiZXhwIjoxNzk0Mzg2Njc5fQ.m6GbUgem2IzT8220cXqXTR8cP9vK4j5wjTI9tFfgRXs
+
+{
+  "document_id": 1,
+  "rating": 5,
+  "comment": "Tài liệu trình bày rất chi tiết, dễ hiểu! Cảm ơn bạn đã chia sẻ."
+}
